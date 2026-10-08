@@ -1,14 +1,15 @@
  Bacteria[] zombie = new Bacteria[3];//declare bacteria variables here
  Human person = new Human();
  boolean[] direction = new boolean[4];
+ int Width = 1000;
+ int Height = 1000;
  void setup()   
  {
    size(1000,1000);
-   person.x=width/2;
-   person.y=height/2;
+   person.pos.x=Width/2;
+   person.pos.y=Height/2;
    for(int i=zombie.length-1;i>=0;i--){
      zombie[i] = new Bacteria();
-     zombie[i].show();
    }
  }   
  
@@ -18,67 +19,91 @@
  } 
  
  void update(){
-   if(direction[0]) person.y-=5;
-   if(direction[1]) person.x-=5;
-   if(direction[2]) person.y+=5;
-   if(direction[3]) person.x+=5;
+   if(direction[0]) person.pos.y-=5;
+   if(direction[1]) person.pos.x-=5;
+   if(direction[2]) person.pos.y+=5;
+   if(direction[3]) person.pos.x+=5;
    person.show();
    for(int i=zombie.length-1;i>=0;i--){
-     zombie[i].move();
-     zombie[i].show();
+     if(zombie[i].hp<=0){
+       zombie[i].show();
+     } else{
+       zombie[i].move();
+     }
    }
  }
  
  class Bacteria{     
-   PVector pos,step,target;
-   float speed = 3.0;
+   PVector pos,target;
+   float speed = 16;
+   int hp = 5;
    Bacteria(){
-     pos=new PVector((int)(Math.random()*2)*width,(int)(Math.random()*2)*height);
+     pos=new PVector((int)(Math.random()*2)*Width,(int)(Math.random()*2)*Height);
    }
    void move() {
-     step = new PVector();
-     target = new PVector(person.x,person.y);
-     if(Math.random()>0.8){
-       step = PVector.sub(target, pos);
-     }else{
-       
+     target = new PVector(person.pos.x,person.pos.y);
+     PVector step = pos.copy();
+     if(pos.x<target.x){
+       step.x+=(int)(Math.random()*(2*speed))-speed*0.75;
+     } else if(pos.x>target.x){
+       step.x-=(int)(Math.random()*(2*speed))-speed*0.75;
      }
-     step.normalize();
-     step.mult(speed);
-     pos.add(step);
+     if(pos.y<target.y){
+       step.y+=(int)(Math.random()*(2*speed))-speed*0.75;
+     }else if(pos.y>target.y){
+       step.y-=(int)(Math.random()*(2*speed))-speed*0.75;
+     }
+     pos.lerp(step,1.0);
+     show();
    }
    void show(){
-     fill(115, 216, 60);
+     if(hp<=10){
+       fill(115, 216, 60);
+     }
      ellipse(pos.x,pos.y,100,100);
    }
  }
  
  class Bullet{
-   int x,y;
+   PVector pos,vel;
+   float angle;
+   float speed=3.0;
    Bullet(){
-     
+     pos=new PVector(person.pos.x,person.pos.y);
+     angle = atan2(mouseY-pos.y,mouseX-pos.x);
+     vel = new PVector(cos(angle),sin(angle));
+     vel.mult(speed);
    }
-   void draw(){
-     
+   void fire(){
+     while(pos.x>=0&&pos.y>=0&&pos.x<=Width&&pos.y<=Height){
+       pos.add(vel);
+       show();
+     }
    }
    void show(){
+     pushMatrix();
+     translate(pos.x,pos.y);
+     rotate(angle);
      fill(255,255,0);
-     rect(x,y,10,5);
+     rect(pos.x,pos.y,10,5);
+     popMatrix();
    }
  }
  
  class Human{
-   int x,y;
+   PVector pos;
    Human(){
-     x=0;
-     y=0;
+     pos = new PVector(0,0);
    }
    void show(){
      fill(0);
-     ellipse(x,y,20,20);
+     ellipse(pos.x,pos.y,20,20);
    }
  }
- 
+ void mousePressed(){
+   Bullet shot = new Bullet();
+   shot.fire();
+ }
  void keyPressed(){
    if(key=='w') direction[0]=true;
    if(key=='a') direction[1]=true;
