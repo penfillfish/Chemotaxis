@@ -1,4 +1,5 @@
  Bacteria[] zombie = new Bacteria[3];//declare bacteria variables here
+ ArrayList<Bullet> bullets = new ArrayList<Bullet>();
  Human person = new Human();
  boolean[] direction = new boolean[4];
  int Width = 1000;
@@ -29,6 +30,13 @@
        zombie[i].show();
      } else{
        zombie[i].move();
+     }
+   }
+   for(int i=bullets.size()-1;i>=0;i--){
+     if(bullets.get(i).isOutOfBounds()){
+       bullets.remove(i);
+     } else{
+       bullets.get(i).fire();
      }
    }
  }
@@ -62,12 +70,15 @@
      }
      ellipse(pos.x,pos.y,100,100);
    }
+   boolean isDead(){
+     return hp<=0;
+   }
  }
- 
+
  class Bullet{
    PVector pos,vel;
    float angle;
-   float speed=3.0;
+   float speed=16.0;
    Bullet(){
      pos=new PVector(person.pos.x,person.pos.y);
      angle = atan2(mouseY-pos.y,mouseX-pos.x);
@@ -75,18 +86,19 @@
      vel.mult(speed);
    }
    void fire(){
-     while(pos.x>=0&&pos.y>=0&&pos.x<=Width&&pos.y<=Height){
-       pos.add(vel);
-       show();
-     }
+     pos.add(vel);
+     show();
    }
    void show(){
      pushMatrix();
      translate(pos.x,pos.y);
      rotate(angle);
      fill(255,255,0);
-     rect(pos.x,pos.y,10,5);
+     rect(0,0,10,5);
      popMatrix();
+   }
+   boolean isOutOfBounds(){
+     return pos.x<0||pos.y<0||pos.x>Width||pos.y>Height;
    }
  }
  
@@ -100,19 +112,22 @@
      ellipse(pos.x,pos.y,20,20);
    }
  }
+ 
  void mousePressed(){
-   Bullet shot = new Bullet();
-   shot.fire();
+   bullets.add(new Bullet());
  }
+ 
  void keyPressed(){
    if(key=='w') direction[0]=true;
    if(key=='a') direction[1]=true;
    if(key=='s') direction[2]=true;
    if(key=='d') direction[3]=true;
  }
+ 
  void keyReleased(){
    if(key=='w') direction[0]=false;
    if(key=='a') direction[1]=false;
    if(key=='s') direction[2]=false;
    if(key=='d') direction[3]=false;
  }
+ 
