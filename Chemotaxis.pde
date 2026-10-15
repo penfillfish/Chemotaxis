@@ -4,6 +4,7 @@
  boolean[] direction = new boolean[4];
  int Width = 1000;
  int Height = 1000;
+ int velocity=10;
  void setup()   
  {
    size(1000,1000);
@@ -16,14 +17,10 @@
  
  void draw(){
    background(255);
-   update();
- } 
- 
- void update(){
-   if(direction[0]) person.pos.y-=5;
-   if(direction[1]) person.pos.x-=5;
-   if(direction[2]) person.pos.y+=5;
-   if(direction[3]) person.pos.x+=5;
+   if(direction[0]) person.pos.y-=velocity;
+   if(direction[1]) person.pos.x-=velocity;
+   if(direction[2]) person.pos.y+=velocity;
+   if(direction[3]) person.pos.x+=velocity;
    person.show();
    for(int i=zombie.length-1;i>=0;i--){
      if(zombie[i].hp<=0){
@@ -39,7 +36,7 @@
        bullets.get(i).fire();
      }
    }
- }
+ } 
  
  class Bacteria{     
    PVector pos,target;
@@ -55,11 +52,15 @@
        step.x+=(int)(Math.random()*(2*speed))-speed*0.75;
      } else if(pos.x>target.x){
        step.x-=(int)(Math.random()*(2*speed))-speed*0.75;
+     } else{
+       step.x-=(int)(Math.random()*(2*speed))-speed;
      }
      if(pos.y<target.y){
        step.y+=(int)(Math.random()*(2*speed))-speed*0.75;
      }else if(pos.y>target.y){
        step.y-=(int)(Math.random()*(2*speed))-speed*0.75;
+     } else{
+       step.y-=(int)(Math.random()*(2*speed))-speed;
      }
      pos.lerp(step,1.0);
      show();
