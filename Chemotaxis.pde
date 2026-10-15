@@ -4,7 +4,6 @@
  boolean[] direction = new boolean[4];
  int Width = 1000;
  int Height = 1000;
- int velocity=10;
  void setup()   
  {
    size(1000,1000);
@@ -17,11 +16,14 @@
  
  void draw(){
    background(255);
-   if(direction[0]) person.pos.y-=velocity;
-   if(direction[1]) person.pos.x-=velocity;
-   if(direction[2]) person.pos.y+=velocity;
-   if(direction[3]) person.pos.x+=velocity;
-   person.show();
+   person.move();
+   for(int i=bullets.size()-1;i>=0;i--){
+     if(bullets.get(i).isOutOfBounds()){
+       bullets.remove(i);
+     } else{
+       bullets.get(i).fire();
+     }
+   }
    for(int i=zombie.length-1;i>=0;i--){
      if(zombie[i].hp<=0){
        zombie[i].show();
@@ -30,18 +32,28 @@
      }
    }
    for(int i=bullets.size()-1;i>=0;i--){
-     if(bullets.get(i).isOutOfBounds()){
+     boolean hit = false;
+     Bullet b = bullets.get(i);
+     for(int j=zombie.length-1;j>=0;j--){
+       Bacteria z = zombie[j];
+       if(bulletHit(b,z)){
+         zombie[j].hp-=1;
+       }
+     }
+     if(hit){
        bullets.remove(i);
-     } else{
-       bullets.get(i).fire();
      }
    }
  } 
- 
+ boolean bulletHit(Bullet b, Bacteria z){
+   
+ }
+
  class Bacteria{     
    PVector pos,target;
    float speed = 16;
    int hp = 5;
+   int radius = 50;
    Bacteria(){
      pos=new PVector((int)(Math.random()*2)*Width,(int)(Math.random()*2)*Height);
    }
@@ -70,7 +82,9 @@
      if(hp<=10){
        fill(115, 216, 60);
      }
-     ellipse(pos.x,pos.y,100,100);
+     pos.x = constrain(pos.x,radius,Width-radius);
+     pos.y = constrain(pos.y,radius,Height-radius);
+     ellipse(pos.x,pos.y,radius*2,radius*2);
    }
    boolean isDead(){
      return hp<=0;
@@ -79,6 +93,7 @@
 
  class Bullet{
    PVector pos,vel;
+   PVector dimensions = new PVector(10,5);
    float angle;
    float speed=16.0;
    Bullet(){
@@ -96,7 +111,7 @@
      translate(pos.x,pos.y);
      rotate(angle);
      fill(255,255,0);
-     rect(0,0,10,5);
+     rect(0,0,dimensions.x,dimensions.y);
      popMatrix();
    }
    boolean isOutOfBounds(){
@@ -105,12 +120,28 @@
  }
  
  class Human{
+   PVector vel = new PVector(0,0);
    PVector pos;
+   float acceleration = 0.5;
+   float friction = 0.98;
+   int maxSpeed = 15;
    Human(){
      pos = new PVector(0,0);
    }
+   void move(){
+     if(direction[0]) vel.y-=acceleration;
+     if(direction[1]) vel.x-=acceleration;
+     if(direction[2]) vel.y+=acceleration;
+     if(direction[3]) vel.x+=acceleration;
+     vel.limit(maxSpeed);
+     vel.mult(friction);
+     pos.add(vel);
+     person.show();
+   }
    void show(){
      fill(0);
+     person.pos.x = constrain(person.pos.x,10,Width-10);
+     person.pos.y = constrain(person.pos.y,10,Height-10);
      ellipse(pos.x,pos.y,20,20);
    }
  }
