@@ -47,7 +47,7 @@
    }
    void move() {
      target = new PVector(person.pos.x,person.pos.y);
-     PVector step = pos.copy();
+     PVector step = new PVector(pos.x, pos.y);
      if(pos.x<target.x){
        step.x+=(int)(Math.random()*(2*speed))-speed*0.75;
      } else if(pos.x>target.x){
@@ -62,7 +62,8 @@
      } else{
        step.y-=(int)(Math.random()*(2*speed))-speed;
      }
-     pos.lerp(step,1.0);
+     pos.x = step.x;
+     pos.y = step.y;
      show();
    }
    void show(){
