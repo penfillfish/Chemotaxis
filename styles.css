@@ -1,68 +1,21 @@
-{
-    box-sizing: border-box;
-}
-
-html {
-    min-height: 100%;
-}
-
 body {
-    margin: 0;
-    padding: 24px;
-    background-color: rgb(200, 200, 200);
-    color: rgb(0, 0, 0);
+    background-color: rgb(200,200,200);
+    color: rgb(0,0,0);
     font-family: "Open Sans", sans-serif;
-    text-align: center;
+    text-align: left;
 }
 
-/* Page header */
-header {
-    margin-bottom: 20px;
-}
-
-header h1 {
-    margin: 0;
-    font-size: 2rem;
-    font-weight: 600;
-}
-
-/* p5.js canvas container */
-#simulation {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-/* Canvas created by createCanvas() */
-#simulation canvas {
+#content {
     display: block;
-    max-width: 100%;
-    height: auto;
-    border: 1px solid #888;
+    margin-left: auto;
+    margin-right: auto
 }
 
-/* Footer */
+header {
+	
+}
+
 footer {
-    margin-top: 20px;
-    font-style: italic;
-    font-size: 90%;
-}
-
-/* Smaller screens */
-@media (max-width: 600px) {
-    body {
-        padding: 12px;
-    }
-
-    header h1 {
-        font-size: 1.5rem;
-    }
-
-    #simulation canvas {
-        width: 100% !important;
-        height: auto !important;
-    }
+	font-style: italic;
+	font-size: 90%;
 }
