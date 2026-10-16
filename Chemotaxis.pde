@@ -1,4 +1,4 @@
- Bacteria[] zombie = new Bacteria[3];//declare bacteria variables here
+ Bacteria[] zombie = new Bacteria[5];//declare bacteria variables here
  ArrayList<Bullet> bullets = new ArrayList<Bullet>();
  Human person = new Human();
  boolean[] direction = new boolean[4];
@@ -38,21 +38,34 @@
        Bacteria z = zombie[j];
        if(bulletHit(b,z)){
          zombie[j].hp-=1;
+         hit=true;
        }
      }
      if(hit){
        bullets.remove(i);
      }
    }
- } 
+ }
+ 
+ void generateZombie(){
+   for(int i=zombie.length-1;i>=0;i--){
+     zombie[i] = new Bacteria();
+   }
+ }
+ 
  boolean bulletHit(Bullet b, Bacteria z){
-   
+   for(int i=1;i<=8;i+=2){
+     if(dist(b.rotatedV(i,true),b.rotatedV(i+1,false),z.pos.x,z.pos.y)<=z.radius){
+       return true;
+     }
+   }
+   return false;
  }
 
  class Bacteria{     
    PVector pos,target;
    float speed = 16;
-   int hp = 5;
+   int hp = 10;
    int radius = 50;
    Bacteria(){
      pos=new PVector((int)(Math.random()*2)*Width,(int)(Math.random()*2)*Height);
@@ -79,8 +92,10 @@
      show();
    }
    void show(){
-     if(hp<=10){
-       fill(115, 216, 60);
+     if(hp<=10&&hp>0){
+       fill(128,210,100-10*hp);
+     }else{
+       fill(128);
      }
      pos.x = constrain(pos.x,radius,Width-radius);
      pos.y = constrain(pos.y,radius,Height-radius);
@@ -91,7 +106,7 @@
    }
  }
 
- class Bullet{
+class Bullet{
    PVector pos,vel;
    PVector dimensions = new PVector(10,5);
    float angle;
@@ -116,6 +131,33 @@
    }
    boolean isOutOfBounds(){
      return pos.x<0||pos.y<0||pos.x>Width||pos.y>Height;
+   }
+   float rotatedV(int Vnum,boolean findingX){
+     if(findingX){
+       if(Vnum==1){
+         return pos.x+5*cos(angle)-2.5*sin(angle);
+       }else if(Vnum==2){
+         return pos.x-5*cos(angle)-2.5*sin(angle);  
+       }else if(Vnum==3){
+         return pos.x-5*cos(angle)+2.5*sin(angle);
+       }else if(Vnum==4){
+         return pos.x+5*cos(angle)+2.5*sin(angle);
+       }else{
+         return 0.0;
+       }
+     }else{
+       if(Vnum==1){
+         return pos.y+5*sin(angle)+2.5*cos(angle);
+       }else if(Vnum==2){
+         return pos.y-5*sin(angle)+2.5*cos(angle);
+       }else if(Vnum==3){
+         return pos.y-5*sin(angle)-2.5*cos(angle);
+       }else if(Vnum==4){
+         return pos.y+5*sin(angle)-2.5*cos(angle);
+       }else{
+         return 0.0;
+       }
+     }
    }
  }
  
