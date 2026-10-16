@@ -47,7 +47,7 @@
    }
  }
  
- void generateZombie(){
+ void generateZombies(){
    for(int i=zombie.length-1;i>=0;i--){
      zombie[i] = new Bacteria();
    }
@@ -197,6 +197,7 @@ class Bullet{
    if(key=='a') direction[1]=true;
    if(key=='s') direction[2]=true;
    if(key=='d') direction[3]=true;
+   if(key=='r') generateZombies();
  }
  
  void keyReleased(){
